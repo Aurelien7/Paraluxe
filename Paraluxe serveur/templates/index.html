@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paraluxe — Lampadaire Parasol Urbain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --steel-dark:   #141618;
+      --steel-mid:    #1e2124;
+      --steel-light:  #282c30;
+      --steel-border: #32383e;
+      --steel-shine:  #4a5258;
+      --wood-dark:    #5a3a1a;
+      --wood-mid:     #8b5a2b;
+      --wood-warm:    #c4813a;
+      --wood-light:   #e8a855;
+      --concrete:     #6b7280;
+      --text:         #d4cfc8;
+      --text-dim:     #7a7570;
+      --white:        #f0ece6;
+      --font-head:    'Barlow Condensed', sans-serif;
+      --font-mono:    'IBM Plex Mono', monospace;
+      --font-body:    'Barlow', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--steel-dark); color: var(--text);
+      font-family: var(--font-body); font-weight: 300;
+      line-height: 1.65; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,.012) 3px, rgba(255,255,255,.012) 4px),
+        repeating-linear-gradient(0deg,  transparent, transparent 60px, rgba(255,255,255,.008) 60px, rgba(255,255,255,.008) 61px);
+      pointer-events: none; z-index: 1000;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; height: 64px;
+      background: var(--steel-mid);
+      border-bottom: 2px solid var(--wood-warm);
+      box-shadow: 0 4px 40px rgba(0,0,0,.6);
+    }
+    .nav-logo { font-family: var(--font-head); font-weight: 800; font-size: 1.4rem; letter-spacing: .08em; text-transform: uppercase; color: var(--white); }
+    .nav-logo em { font-style: normal; color: var(--wood-warm); }
+    .nav-logo span { font-weight: 300; font-size: .88rem; color: var(--concrete); margin-left: .6rem; letter-spacing: .1em; }
+    nav ul { list-style: none; display: flex; }
+    nav ul li a {
+      display: block; padding: 0 1.4rem; height: 64px; line-height: 64px;
+      color: var(--concrete); text-decoration: none;
+      font-family: var(--font-head); font-size: .88rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
+      border-right: 1px solid var(--steel-border); transition: color .2s, background .2s;
+    }
+    nav ul li:first-child a { border-left: 1px solid var(--steel-border); }
+    nav ul li a:hover { color: var(--wood-light); background: rgba(196,129,58,.06); }
+    .nav-cta { background: var(--wood-warm) !important; color: var(--steel-dark) !important; font-weight: 700 !important; border: none !important; }
+    .nav-cta:hover { background: var(--wood-light) !important; }
+
+    /* HERO */
+    .hero { min-height: 100vh; padding: 6rem 3rem 3rem; display: grid; place-items: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(20,22,24,1) 50%, rgba(30,33,36,1) 50%); }
+    .hero::after {
+      content: ''; position: absolute; right: 0; top: 0; width: 45%; height: 100%;
+      background: linear-gradient(180deg, rgba(90,58,26,.15) 0%, rgba(196,129,58,.08) 50%, transparent 100%);
+      clip-path: polygon(8% 0, 100% 0, 100% 100%, 0% 100%);
+    }
+    .wood-strip { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; z-index: 2;
+      background: repeating-linear-gradient(90deg, var(--wood-dark) 0px, var(--wood-mid) 8px, var(--wood-warm) 16px, var(--wood-dark) 24px, var(--wood-mid) 32px, var(--wood-warm) 48px, var(--wood-dark) 56px);
+    }
+    .hero-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; max-width: 1200px; width: 100%; align-items: center; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: rgba(196,129,58,.12); border: 1px solid rgba(196,129,58,.3);
+      color: var(--wood-warm); padding: .35rem 1rem;
+      font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; margin-bottom: 1.5rem;
+    }
+    .hero-tag .dot { width: 6px; height: 6px; background: var(--wood-warm); border-radius: 50%; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+    h1 {
+      font-family: var(--font-head); font-weight: 800; text-transform: uppercase;
+      font-size: clamp(3.5rem, 6vw, 6rem); line-height: .95; letter-spacing: .01em; color: var(--white);
+    }
+    h1 .accent { color: var(--wood-warm); display: block; }
+    h1 .sub { font-weight: 300; color: var(--concrete); font-size: .52em; display: block; letter-spacing: .1em; margin-top: .4em; }
+    .hero-desc { margin: 2rem 0; color: var(--text-dim); font-size: 1rem; max-width: 440px; line-height: 1.75; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn {
+      padding: .8rem 2rem; font-family: var(--font-head); font-weight: 700;
+      font-size: .95rem; letter-spacing: .1em; text-transform: uppercase;
+      text-decoration: none; cursor: pointer; border: none; transition: all .2s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .btn-primary { background: var(--wood-warm); color: var(--steel-dark); }
+    .btn-primary:hover { background: var(--wood-light); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--steel-border); clip-path: none; }
+    .btn-ghost:hover { border-color: var(--wood-warm); color: var(--wood-warm); }
+
+    .stats-panel { background: var(--steel-mid); border: 1px solid var(--steel-border); border-top: 3px solid var(--wood-warm); padding: 2rem; }
+    .stats-panel-label { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .15em; color: var(--wood-warm); text-transform: uppercase; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--steel-border); }
+    .stats-list { display: flex; flex-direction: column; gap: 1.2rem; }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(50,56,62,.6); }
+    .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .stat-name { font-family: var(--font-head); text-transform: uppercase; letter-spacing: .08em; font-size: .9rem; color: var(--concrete); }
+    .stat-val { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 500; color: var(--white); }
+    .stat-val small { font-size: .7rem; color: var(--concrete); }
+
+    /* SECTIONS */
+    section { padding: 7rem 3rem; position: relative; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-eyebrow { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+    .eyebrow-line { flex: 0 0 40px; height: 2px; background: var(--wood-warm); }
+    .eyebrow-text { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--wood-warm); }
+    h2 { font-family: var(--font-head); font-weight: 700; text-transform: uppercase; font-size: clamp(2.2rem, 4vw, 3.5rem); line-height: 1.0; letter-spacing: .02em; color: var(--white); margin-bottom: 1rem; }
+    .section-sub { color: var(--text-dim); max-width: 540px; margin-bottom: 3rem; font-size: 1rem; }
+
+    .divider { height: 1px; background: linear-gradient(to right, transparent, var(--steel-border) 20%, var(--steel-border) 80%, transparent); position: relative; }
+    .divider::before { content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: var(--wood-warm); }
+
+    /* FONCTIONNEMENT */
+    #fonctionnement { background: var(--steel-mid); }
+    #fonctionnement::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: repeating-linear-gradient(180deg, var(--wood-dark) 0, var(--wood-mid) 8px, var(--wood-warm) 16px, var(--wood-dark) 24px);
+    }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--steel-border); border: 1px solid var(--steel-border); }
+    .feat-card { background: var(--steel-mid); padding: 2rem; transition: background .3s; position: relative; }
+    .feat-card:hover { background: var(--steel-light); }
+    .feat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--wood-warm); transform: scaleX(0); transition: transform .3s; transform-origin: left; }
+    .feat-card:hover::after { transform: scaleX(1); }
+    .feat-num { font-family: var(--font-mono); font-size: .7rem; color: var(--wood-warm); letter-spacing: .1em; margin-bottom: .8rem; }
+    .feat-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+    .feat-card h3 { font-family: var(--font-head); font-weight: 700; text-transform: uppercase; font-size: 1.05rem; letter-spacing: .06em; margin-bottom: .6rem; color: var(--white); }
+    .feat-card p { color: var(--text-dim); font-size: .9rem; line-height: 1.65; }
+
+    /* CAPTEURS */
+    .sensors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; }
+    .sensor-card { background: var(--steel-mid); border: 1px solid var(--steel-border); border-left: 3px solid var(--wood-warm); padding: 1.5rem; transition: background .3s, border-color .3s; }
+    .sensor-card:hover { background: var(--steel-light); border-left-color: var(--wood-light); }
+    .sensor-header { display: flex; align-items: center; gap: .8rem; margin-bottom: .8rem; }
+    .sensor-icon { font-size: 1.3rem; }
+    .sensor-name { font-family: var(--font-head); font-weight: 700; text-transform: uppercase; font-size: .95rem; letter-spacing: .08em; color: var(--white); }
+    .sensor-ref { font-family: var(--font-mono); font-size: .68rem; color: var(--wood-warm); margin-bottom: .5rem; }
+    .sensor-desc { font-size: .85rem; color: var(--text-dim); line-height: 1.55; }
+
+    /* DONNÉES */
+    #donnees { background: var(--steel-mid); }
+    .data-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2px; background: var(--steel-border); border: 1px solid var(--steel-border); margin-bottom: 2rem; }
+    .data-main { background: var(--steel-dark); padding: 2.5rem; }
+    .data-main-label { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .14em; color: var(--concrete); text-transform: uppercase; margin-bottom: .5rem; }
+    .data-main-val { font-family: var(--font-head); font-weight: 800; font-size: 5rem; line-height: 1; letter-spacing: -.01em; color: var(--white); }
+    .data-main-val .unit { font-size: 2rem; color: var(--concrete); font-weight: 300; }
+    .data-bar-wrap { margin-top: 1rem; }
+    .data-bar-label { font-family: var(--font-mono); font-size: .65rem; color: var(--text-dim); margin-bottom: .4rem; display: flex; justify-content: space-between; }
+    .data-bar { height: 3px; background: var(--steel-border); }
+    .data-bar-fill { height: 100%; background: linear-gradient(to right, var(--wood-dark), var(--wood-warm)); }
+    .data-side { background: var(--steel-light); }
+    .data-row { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 1px solid var(--steel-border); }
+    .data-row:last-child { border-bottom: none; }
+    .data-row-key { font-family: var(--font-mono); font-size: .72rem; color: var(--concrete); letter-spacing: .08em; text-transform: uppercase; }
+    .data-row-val { font-family: var(--font-head); font-weight: 600; font-size: 1rem; color: var(--white); }
+    .badge { padding: .2rem .7rem; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; }
+    .badge-ok   { background: rgba(196,129,58,.15); color: var(--wood-warm); border: 1px solid rgba(196,129,58,.3); }
+    .badge-warn { background: rgba(168,82,45,.15);  color: #e88a50;           border: 1px solid rgba(168,82,45,.3); }
+
+    /* FOOTER */
+    footer { background: var(--steel-dark); border-top: 3px solid var(--steel-border); padding: 2.5rem 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: var(--font-head); font-weight: 800; text-transform: uppercase; font-size: 1.1rem; color: var(--wood-warm); letter-spacing: .08em; }
+    .footer-links { display: flex; }
+    .footer-links a { color: var(--text-dim); text-decoration: none; font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; padding: 0 1.2rem; border-right: 1px solid var(--steel-border); transition: color .2s; }
+    .footer-links a:first-child { border-left: 1px solid var(--steel-border); }
+    .footer-links a:hover { color: var(--wood-warm); }
+    .footer-copy { font-family: var(--font-mono); font-size: .7rem; color: var(--text-dim); letter-spacing: .08em; }
+
+    @media(max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .data-grid { grid-template-columns: 1fr; }
+    }
+    @media(max-width: 600px) {
+      nav { padding: 0 1.5rem; } nav ul { display: none; }
+      section { padding: 5rem 1.5rem; } footer { padding: 2rem 1.5rem; flex-direction: column; }
+      .features-grid { grid-template-columns: 1fr; } h1 { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Lumi<em>Shade</em> <span>// Urbain</span></div>
+  <ul>
+    <li><a href="#fonctionnement">Fonctionnement</a></li>
+    <li><a href="#capteurs">Capteurs</a></li>
+    <li><a href="#donnees">Données</a></li>
+    <li><a href="mesures.html" class="nav-cta">Relevés →</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="wood-strip"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag"><div class="dot"></div> Projet urbain // Actif</div>
+      <h1>
+        Lampadaire
+        <span class="accent">Parasol</span>
+        <span class="sub">— Infrastructure intelligente</span>
+      </h1>
+      <p class="hero-desc">
+        <!-- [PLACEHOLDER] Courte description du projet : rôle, contexte, ville/école concernée -->
+        Un mobilier urbain autonome alliant acier structural et boiserie de protection,
+        piloté par capteurs et connecté aux services de la collectivité.
+      </p>
+      <div class="hero-btns">
+        <a href="#fonctionnement" class="btn btn-primary">Découvrir</a>
+        <a href="mesures.html" class="btn btn-ghost">Voir les relevés →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="stats-panel">
+        <div class="stats-panel-label">// Statut système — en ligne</div>
+        <div class="stats-list">
+          <div class="stat-row">
+            <span class="stat-name">Surveillance</span>
+            <span class="stat-val">24<small>/7</small></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Capteurs actifs</span>
+            <span class="stat-val"><!-- [PLACEHOLDER] -->04</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Fréquence relevé</span>
+            <span class="stat-val"><!-- [PLACEHOLDER] -->10<small> s</small></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">État structure</span>
+            <span class="stat-val" style="color:var(--wood-warm);font-size:1rem">● OPÉRATIONNEL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="fonctionnement">
+  <div class="section-inner">
+    <div class="section-eyebrow"><div class="eyebrow-line"></div><div class="eyebrow-text">01 — Fonctionnement</div></div>
+    <h2>Automatisé &<br>Connecté</h2>
+    <p class="section-sub"><!-- [PLACEHOLDER] Description générale du fonctionnement du système --></p>
+    <div class="features-grid">
+      <div class="feat-card"><div class="feat-num">// 01</div><div class="feat-icon">☀️</div><h3>Déploiement automatique</h3><p><!-- [PLACEHOLDER] Quand et comment le parasol se déploie --></p></div>
+      <div class="feat-card"><div class="feat-num">// 02</div><div class="feat-icon">💡</div><h3>Éclairage adaptatif</h3><p><!-- [PLACEHOLDER] Système d'éclairage et critères d'activation --></p></div>
+      <div class="feat-card"><div class="feat-num">// 03</div><div class="feat-icon">🌬️</div><h3>Sécurité vent fort</h3><p><!-- [PLACEHOLDER] Repli automatique au-delà du seuil de vent --></p></div>
+      <div class="feat-card"><div class="feat-num">// 04</div><div class="feat-icon">📡</div><h3>Transmission données</h3><p><!-- [PLACEHOLDER] Envoi des relevés au serveur Flask via HTTP POST --></p></div>
+      <div class="feat-card"><div class="feat-num">// 05</div><div class="feat-icon">🏙️</div><h3>Service collectivité</h3><p><!-- [PLACEHOLDER] Comment la mairie exploite les données collectées --></p></div>
+      <div class="feat-card"><div class="feat-num">// 06</div><div class="feat-icon">🔋</div><h3><!-- [PLACEHOLDER] Titre --></h3><p><!-- [PLACEHOLDER] Description 6e fonctionnalité --></p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="capteurs">
+  <div class="section-inner">
+    <div class="section-eyebrow"><div class="eyebrow-line"></div><div class="eyebrow-text">02 — Instrumentation</div></div>
+    <h2>Capteurs &<br>Matériel embarqué</h2>
+    <p class="section-sub"><!-- [PLACEHOLDER] Plateforme matérielle utilisée (Raspberry Pi, Arduino, etc.) --></p>
+    <div class="sensors-grid">
+      <div class="sensor-card"><div class="sensor-header"><div class="sensor-icon">🌡️</div><div class="sensor-name">Température</div></div><div class="sensor-ref"><!-- [PLACEHOLDER] Référence capteur --></div><div class="sensor-desc"><!-- [PLACEHOLDER] Plage de mesure, précision, rôle --></div></div>
+      <div class="sensor-card"><div class="sensor-header"><div class="sensor-icon">💨</div><div class="sensor-name">Vitesse du vent</div></div><div class="sensor-ref"><!-- [PLACEHOLDER] Référence anémomètre --></div><div class="sensor-desc"><!-- [PLACEHOLDER] Seuil de déclenchement, unité --></div></div>
+      <div class="sensor-card"><div class="sensor-header"><div class="sensor-icon">☀️</div><div class="sensor-name">Luminosité</div></div><div class="sensor-ref"><!-- [PLACEHOLDER] Référence LDR / BH1750 --></div><div class="sensor-desc"><!-- [PLACEHOLDER] Seuil éclairage, logique jour/nuit --></div></div>
+      <div class="sensor-card"><div class="sensor-header"><div class="sensor-icon">🔧</div><div class="sensor-name"><!-- [PLACEHOLDER] Capteur 4 --></div></div><div class="sensor-ref"><!-- [PLACEHOLDER] --></div><div class="sensor-desc"><!-- [PLACEHOLDER] --></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="donnees">
+  <div class="section-inner">
+    <div class="section-eyebrow"><div class="eyebrow-line"></div><div class="eyebrow-text">03 — Données en direct</div></div>
+    <h2>Relevés disponibles<br>pour la ville</h2>
+    <p class="section-sub"><!-- [PLACEHOLDER] Accès public aux données, utilité pour la collectivité --></p>
+    <div class="data-grid">
+      <div class="data-main">
+        <div class="data-main-label">// Température actuelle</div>
+        <div class="data-main-val">-- <span class="unit">°C</span></div>
+        <div class="data-bar-wrap">
+          <div class="data-bar-label"><span>0°C</span><span>Dernière mesure : --</span><span>150°C</span></div>
+          <div class="data-bar"><div class="data-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="data-side">
+        <div class="data-row"><span class="data-row-key">Vitesse du vent</span><span class="data-row-val">-- km/h</span></div>
+        <div class="data-row"><span class="data-row-key">État parasol</span><span class="badge badge-ok"><!-- [PLACEHOLDER] --></span></div>
+        <div class="data-row"><span class="data-row-key">Éclairage</span><span class="badge badge-warn"><!-- [PLACEHOLDER] --></span></div>
+        <div class="data-row"><span class="data-row-key">Unité</span><span class="data-row-val" style="font-size:.85rem;color:var(--concrete)">#01 — <!-- [PLACEHOLDER] emplacement --></span></div>
+      </div>
+    </div>
+    <a href="mesures.html" class="btn btn-primary">Accéder aux relevés complets →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">LumiShade</div>
+  <div class="footer-links">
+    <a href="#fonctionnement">Fonctionnement</a>
+    <a href="#capteurs">Capteurs</a>
+    <a href="mesures.html">Relevés</a>
+  </div>
+  <div class="footer-copy"><!-- [PLACEHOLDER] Équipe / École / Année --></div>
+</footer>
+
+</body>
+</html>
