@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Relevés — Paraluxe</title>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -209,6 +210,8 @@
 
   <!-- CHARTS -->
   <div class="charts-row" style="margin-bottom: 2px;">
+
+    <!-- CARTE 1 — Température -->
     <div class="chart-card">
       <div class="chart-card-header">
         <div class="chart-card-title">Température</div>
@@ -218,16 +221,12 @@
           <button class="period-btn">24h</button>
         </div>
       </div>
-      <!-- [PLACEHOLDER GRAPHIQUE]
-           Remplacer par un <canvas id="tempChart"> et initialiser Chart.js.
-           Données depuis la route Flask /api/mesures.
-           CDN Chart.js : https://cdn.jsdelivr.net/npm/chart.js -->
-      <div class="chart-placeholder">
-        <div class="ph-icon">📈</div>
-        <span>GRAPHIQUE TEMPÉRATURE</span>
-        <span style="opacity:.5">Connecter à /api/mesures → Chart.js</span>
+      <div style="position:relative; height:160px;">
+        <canvas id="tempChart"></canvas>
       </div>
     </div>
+  
+    <!-- CARTE 2 — Vent -->
     <div class="chart-card">
       <div class="chart-card-header">
         <div class="chart-card-title">Vitesse du vent</div>
@@ -237,13 +236,11 @@
           <button class="period-btn">24h</button>
         </div>
       </div>
-      <!-- [PLACEHOLDER GRAPHIQUE] Même principe -->
-      <div class="chart-placeholder">
-        <div class="ph-icon">💨</div>
-        <span>GRAPHIQUE VENT</span>
-        <span style="opacity:.5">Connecter à /api/mesures → Chart.js</span>
+      <div style="position:relative; height:160px;">
+        <canvas id="windChart"></canvas>
       </div>
     </div>
+  
   </div>
 
   <!-- TABLE -->
@@ -319,12 +316,84 @@
       filtered = [...data];
       updateKPIs();
       renderTable();
+      updateCharts(data);
     } catch(e) {
       console.warn("Flask hors ligne — données de démo actives");
       demoFallback();
     }
   }
+  // ── INIT GRAPHIQUES ──────────────────────────────────────────────────
+  let tempChart = null;
+  let windChart = null;
 
+  function initCharts() {
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          ticks: { color: '#7a7570', font: { family: 'IBM Plex Mono', size: 10 }, maxTicksLimit: 6 },
+          grid:  { color: 'rgba(50,56,62,.5)' }
+        },
+        y: {
+          ticks: { color: '#7a7570', font: { family: 'IBM Plex Mono', size: 10 } },
+          grid:  { color: 'rgba(50,56,62,.5)' }
+        }
+      }
+    };
+
+    tempChart = new Chart(document.getElementById('tempChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          borderColor: '#c4813a',
+          backgroundColor: 'rgba(196,129,58,.08)',
+          borderWidth: 2,
+          pointRadius: 2,
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, title: { display: true, text: '°C', color: '#7a7570' } } } }
+    });
+
+    windChart = new Chart(document.getElementById('windChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          borderColor: '#7ab8d4',
+          backgroundColor: 'rgba(122,184,212,.08)',
+          borderWidth: 2,
+          pointRadius: 2,
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, title: { display: true, text: 'km/h', color: '#7a7570' } } } }
+    });
+  }
+
+  function updateCharts(data) {
+    // On prend les 30 derniers relevés et on les remet dans l'ordre chronologique
+    const slice  = [...data].slice(0, 30).reverse();
+    const labels = slice.map(d => d.date_heure ? d.date_heure.slice(11, 19) : '');
+    const temps  = slice.map(d => d.temperature);
+    const vents  = slice.map(d => d.vent);
+
+    tempChart.data.labels            = labels;
+    tempChart.data.datasets[0].data  = temps;
+    tempChart.update();
+
+    windChart.data.labels            = labels;
+    windChart.data.datasets[0].data  = vents;
+    windChart.update();
+  }
   // ── KPIs ─────────────────────────────────────────────────────────────
   function updateKPIs() {
     if (!allData.length) return;
@@ -419,9 +488,11 @@
     }));
     filtered = [...allData];
     updateKPIs(); renderTable();
+    updateCharts(allData);
   }
 
   // ── INIT ─────────────────────────────────────────────────────────────
+  initCharts();
   loadData();
   setInterval(loadData, REFRESH_MS);
 </script>
