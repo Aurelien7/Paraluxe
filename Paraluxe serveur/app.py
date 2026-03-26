@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 DB_NAME = "mesures.db"
@@ -18,6 +18,17 @@ def init_db():
     """)
     conn.commit()
     conn.close()
+
+### Pages HTML
+
+@app.route('/')
+def home():
+    return render_template("index.html")
+@app.route('/mesures')
+def mesures():
+    return render_template("mesures.html")
+
+### API
 
 @app.route('/receive_data', methods=["POST", "GET"])
 def receive_data():

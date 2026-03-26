@@ -1,0 +1,37 @@
+# This workflow will build and push a Python application when a commit is pushed to your default branch.
+#
+
+name: Build and deploy Python app
+
+env:
+  PYTHON_VERSION: '3.8'
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Deploy
+        run: |
+          env
+          echo "Deploy paraluxe"
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan "${{ secrets.SERVER_IP }}" > ~/.ssh/known_hosts
+          git remote add vps ssh://${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}${{ secrets.GIT_REPO_PATH }}
+          git fetch vps main
+          git log --graph --all
+          git push --force-with-lease vps main
+
