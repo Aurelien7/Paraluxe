@@ -15,19 +15,21 @@
       --steel-light:  #282c30;
       --steel-border: #32383e;
       --steel-shine:  #4a5258;
-      --wood-dark:    #5a3a1a;
-      --wood-mid:     #8b5a2b;
       --wood-warm:    #c4813a;
       --wood-light:   #e8a855;
-      --rust:         #a0522d;
       --concrete:     #6b7280;
-      --danger:       #c0392b;
       --text:         #d4cfc8;
       --text-dim:     #7a7570;
       --white:        #f0ece6;
-      --font-head:    'Barlow Condensed', sans-serif;
-      --font-mono:    'IBM Plex Mono', monospace;
-      --font-body:    'Barlow', sans-serif;
+      /* couleurs par capteur */
+      --c-temp:   #c4813a;
+      --c-wind:   #7ab8d4;
+      --c-hum:    #5ec4a0;
+      --c-press:  #a78bfa;
+      --c-iaq:    #f87171;
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-body: 'Barlow', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
@@ -40,7 +42,7 @@
       pointer-events: none; z-index: 1000;
     }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
       position: sticky; top: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
@@ -54,16 +56,11 @@
     nav ul li a { display: block; padding: 0 1.4rem; height: 64px; line-height: 64px; color: var(--concrete); text-decoration: none; font-family: var(--font-head); font-size: .88rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; border-right: 1px solid var(--steel-border); transition: color .2s, background .2s; }
     nav ul li:first-child a { border-left: 1px solid var(--steel-border); }
     nav ul li a:hover, nav ul li a.active { color: var(--wood-light); background: rgba(196,129,58,.06); }
-
-    .live-badge {
-      display: flex; align-items: center; gap: .6rem;
-      font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em;
-      color: var(--wood-warm); text-transform: uppercase;
-    }
+    .live-badge { display: flex; align-items: center; gap: .6rem; font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; color: var(--wood-warm); text-transform: uppercase; }
     .live-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--wood-warm); animation: blink 2s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-    /* PAGE */
+    /* ── PAGE ── */
     .page { padding: 3rem; max-width: 1400px; margin: 0 auto; }
 
     .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem; }
@@ -74,7 +71,6 @@
     .page-sub { color: var(--text-dim); margin-top: .5rem; font-family: var(--font-mono); font-size: .78rem; letter-spacing: .05em; }
 
     .header-controls { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-
     .btn { padding: .65rem 1.5rem; font-family: var(--font-head); font-weight: 700; font-size: .88rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; border: none; transition: all .2s; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
     .btn-primary { background: var(--wood-warm); color: var(--steel-dark); }
     .btn-primary:hover { background: var(--wood-light); }
@@ -83,31 +79,41 @@
     .btn-danger { background: rgba(192,57,43,.12); color: #e74c3c; border: 1px solid rgba(192,57,43,.3); clip-path: none; }
     .btn-danger:hover { background: rgba(192,57,43,.22); }
 
-    /* KPI */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; background: var(--steel-border); border: 1px solid var(--steel-border); margin-bottom: 2px; }
-    .kpi-card { background: var(--steel-mid); padding: 1.8rem; position: relative; overflow: hidden; transition: background .2s; }
+    /* ── KPI GRID ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: var(--steel-border); border: 1px solid var(--steel-border); margin-bottom: 2px; }
+    .kpi-card { background: var(--steel-mid); padding: 1.5rem; position: relative; overflow: hidden; transition: background .2s; }
     .kpi-card:hover { background: var(--steel-light); }
     .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--kpi-color, var(--wood-warm)); }
-    .kpi-label { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; color: var(--concrete); margin-bottom: .6rem; }
-    .kpi-val { font-family: var(--font-head); font-weight: 800; font-size: 2.8rem; letter-spacing: -.01em; line-height: 1; color: var(--white); }
-    .kpi-unit { font-size: 1.2rem; color: var(--concrete); font-weight: 300; }
-    .kpi-trend { font-family: var(--font-mono); font-size: .68rem; margin-top: .5rem; color: var(--concrete); }
+    .kpi-label { font-family: var(--font-mono); font-size: .65rem; text-transform: uppercase; letter-spacing: .12em; color: var(--concrete); margin-bottom: .5rem; }
+    .kpi-val { font-family: var(--font-head); font-weight: 800; font-size: 2.2rem; letter-spacing: -.01em; line-height: 1; color: var(--white); }
+    .kpi-unit { font-size: 1rem; color: var(--concrete); font-weight: 300; }
+    .kpi-trend { font-family: var(--font-mono); font-size: .65rem; margin-top: .4rem; color: var(--concrete); }
     .kpi-trend.up   { color: var(--wood-light); }
-    .kpi-trend.down { color: #7ab8d4; }
+    .kpi-trend.down { color: var(--c-wind); }
     .kpi-trend.warn { color: #e88a50; }
 
-    /* CHARTS */
-    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--steel-border); border: 1px solid var(--steel-border); margin-bottom: 2px; }
-    .chart-card { background: var(--steel-mid); padding: 1.8rem; }
-    .chart-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .chart-card-title { font-family: var(--font-head); font-weight: 700; text-transform: uppercase; font-size: .95rem; letter-spacing: .08em; color: var(--white); }
-    .chart-period { display: flex; gap: 2px; }
-    .period-btn { padding: .25rem .7rem; font-family: var(--font-mono); font-size: .65rem; letter-spacing: .08em; background: var(--steel-dark); border: 1px solid var(--steel-border); color: var(--text-dim); cursor: pointer; transition: all .2s; text-transform: uppercase; }
-    .period-btn.active, .period-btn:hover { background: rgba(196,129,58,.12); border-color: rgba(196,129,58,.4); color: var(--wood-warm); }
-    .chart-placeholder { height: 160px; background: var(--steel-dark); border: 1px dashed var(--steel-border); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-dim); font-family: var(--font-mono); font-size: .72rem; letter-spacing: .06em; text-align: center; gap: .5rem; padding: 1rem; }
-    .chart-placeholder .ph-icon { font-size: 1.5rem; opacity: .4; }
+    /* ── CHARTS GRID ── */
+    .charts-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--steel-border); border: 1px solid var(--steel-border); margin-bottom: 2px; }
+    .charts-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; background: var(--steel-border); border: 1px solid var(--steel-border); margin-bottom: 2px; }
 
-    /* TABLE */
+    .chart-card { background: var(--steel-mid); padding: 1.8rem; }
+    .chart-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+    .chart-card-title { font-family: var(--font-head); font-weight: 700; text-transform: uppercase; font-size: .95rem; letter-spacing: .08em; color: var(--white); display: flex; align-items: center; gap: .6rem; }
+    .chart-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .chart-period { display: flex; gap: 2px; }
+    .period-btn { padding: .22rem .65rem; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; background: var(--steel-dark); border: 1px solid var(--steel-border); color: var(--text-dim); cursor: pointer; transition: all .2s; text-transform: uppercase; }
+    .period-btn.active, .period-btn:hover { background: rgba(196,129,58,.12); border-color: rgba(196,129,58,.4); color: var(--wood-warm); }
+    .chart-wrap { position: relative; height: 140px; }
+
+    /* IAQ gauge */
+    .iaq-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 140px; gap: .5rem; }
+    .iaq-score { font-family: var(--font-head); font-weight: 800; font-size: 3.5rem; letter-spacing: -.02em; line-height: 1; }
+    .iaq-label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+    .iaq-bar-wrap { width: 100%; }
+    .iaq-bar { height: 4px; background: var(--steel-border); border-radius: 2px; overflow: hidden; }
+    .iaq-bar-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+
+    /* ── TABLE ── */
     .table-card { background: var(--steel-mid); border: 1px solid var(--steel-border); border-top: 2px solid var(--wood-warm); overflow: hidden; }
     .table-header { padding: 1.2rem 1.8rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--steel-border); flex-wrap: wrap; gap: 1rem; }
     .table-title { font-family: var(--font-head); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--white); font-size: 1rem; }
@@ -115,51 +121,39 @@
     .search-input { background: var(--steel-dark); border: 1px solid var(--steel-border); color: var(--text); padding: .45rem 1rem; font-family: var(--font-mono); font-size: .78rem; letter-spacing: .05em; outline: none; transition: border-color .2s; }
     .search-input::placeholder { color: var(--text-dim); }
     .search-input:focus { border-color: rgba(196,129,58,.5); }
-
     table { width: 100%; border-collapse: collapse; }
-    thead th { padding: .85rem 1.5rem; text-align: left; font-family: var(--font-mono); font-size: .66rem; text-transform: uppercase; letter-spacing: .12em; color: var(--wood-warm); font-weight: 500; border-bottom: 1px solid var(--steel-border); background: var(--steel-dark); }
+    thead th { padding: .8rem 1.2rem; text-align: left; font-family: var(--font-mono); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; color: var(--wood-warm); border-bottom: 1px solid var(--steel-border); background: var(--steel-dark); white-space: nowrap; }
     tbody tr { border-bottom: 1px solid rgba(50,56,62,.5); transition: background .15s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(196,129,58,.04); }
-    tbody td { padding: .85rem 1.5rem; font-size: .9rem; }
-    .td-id { font-family: var(--font-mono); font-size: .72rem; color: var(--steel-shine); }
-    .td-temp { font-family: var(--font-head); font-weight: 600; font-size: 1.05rem; }
-    .td-temp.hot { color: var(--wood-light); }
-    .td-temp.ok  { color: var(--text); }
-    .td-wind { font-family: var(--font-head); font-weight: 600; font-size: 1.05rem; }
-    .td-wind.strong { color: #e88a50; }
-    .td-date { font-family: var(--font-mono); font-size: .72rem; color: var(--text-dim); }
-    .badge { padding: .18rem .7rem; font-family: var(--font-mono); font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; }
-    .badge-ok    { background: rgba(196,129,58,.1); color: var(--wood-warm);  border: 1px solid rgba(196,129,58,.25); }
-    .badge-warn  { background: rgba(232,138,80,.1); color: #e88a50;           border: 1px solid rgba(232,138,80,.25); }
-    .badge-error { background: rgba(192,57,43,.1);  color: #e74c3c;           border: 1px solid rgba(192,57,43,.25); }
-
+    tbody td { padding: .8rem 1.2rem; font-size: .88rem; white-space: nowrap; }
+    .td-id   { font-family: var(--font-mono); font-size: .7rem; color: var(--steel-shine); }
+    .td-num  { font-family: var(--font-head); font-weight: 600; font-size: 1rem; }
+    .td-date { font-family: var(--font-mono); font-size: .7rem; color: var(--text-dim); }
+    .badge { padding: .15rem .65rem; font-family: var(--font-mono); font-size: .63rem; letter-spacing: .06em; text-transform: uppercase; }
+    .badge-ok    { background: rgba(196,129,58,.1);  color: var(--wood-warm); border: 1px solid rgba(196,129,58,.25); }
+    .badge-warn  { background: rgba(232,138,80,.1);  color: #e88a50;          border: 1px solid rgba(232,138,80,.25); }
+    .badge-error { background: rgba(192,57,43,.1);   color: #e74c3c;          border: 1px solid rgba(192,57,43,.25); }
     .table-footer { padding: 1rem 1.8rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--steel-border); flex-wrap: wrap; gap: .5rem; }
     .table-count { font-family: var(--font-mono); font-size: .72rem; color: var(--text-dim); letter-spacing: .05em; }
     .pagination { display: flex; gap: 2px; }
     .page-btn { width: 32px; height: 32px; background: var(--steel-dark); border: 1px solid var(--steel-border); color: var(--text-dim); font-family: var(--font-mono); font-size: .75rem; cursor: pointer; transition: all .2s; display: grid; place-items: center; }
-    .page-btn.active { background: var(--wood-warm); color: var(--steel-dark); border-color: var(--wood-warm); font-weight: 500; }
+    .page-btn.active { background: var(--wood-warm); color: var(--steel-dark); border-color: var(--wood-warm); }
     .page-btn:hover:not(.active) { border-color: var(--wood-warm); color: var(--wood-warm); }
 
-    /* FOOTER */
     footer { background: var(--steel-dark); border-top: 3px solid var(--steel-border); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 3rem; }
     .footer-logo { font-family: var(--font-head); font-weight: 800; text-transform: uppercase; color: var(--wood-warm); letter-spacing: .08em; }
-    .footer-copy { font-family: var(--font-mono); font-size: .7rem; color: var(--text-dim); letter-spacing: .06em; }
+    .footer-copy { font-family: var(--font-mono); font-size: .7rem; color: var(--text-dim); }
 
-    @media(max-width: 900px) { .charts-row { grid-template-columns: 1fr; } }
-    @media(max-width: 600px) {
-      nav { padding: 0 1.5rem; } nav ul { display: none; }
-      .page { padding: 1.5rem; }
-      footer { flex-direction: column; text-align: center; }
-      table { font-size: .8rem; }
-      thead th, tbody td { padding: .7rem 1rem; }
-    }
+    @media(max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } .charts-3col { grid-template-columns: 1fr 1fr; } }
+    @media(max-width: 900px)  { .charts-2col, .charts-3col { grid-template-columns: 1fr; } .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width: 600px)  { nav { padding: 0 1.5rem; } nav ul { display: none; } .page { padding: 1.5rem; } .kpi-grid { grid-template-columns: 1fr 1fr; } footer { flex-direction: column; } }
   </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="index.html">Para<em>luxe</em></a>
+  <a class="nav-logo" href="index.html">Lumi<em>Shade</em></a>
   <ul>
     <li><a href="index.html">Accueil</a></li>
     <li><a href="#" class="active">Relevés</a></li>
@@ -169,14 +163,12 @@
 
 <main class="page">
 
+  <!-- HEADER -->
   <div class="page-header">
     <div>
-      <div class="section-eyebrow"><div class="eyebrow-line"></div><div class="eyebrow-text">Station météo urbaine</div></div>
+      <div class="section-eyebrow"><div class="eyebrow-line"></div><div class="eyebrow-text">Station BME680 — Urbaine</div></div>
       <h1>Relevés<br>Environnementaux</h1>
-      <p class="page-sub">
-        <!-- [PLACEHOLDER] Identifiant et emplacement de l'unité (ex: Unité #01 — Place de la Mairie, Ville) -->
-        Unité #01 — <!-- Nom de l'emplacement -->
-      </p>
+      <p class="page-sub" id="page-sub">Unité #01 — <!-- [PLACEHOLDER] emplacement --> | Dernière mise à jour : <span id="last-update">—</span></p>
     </div>
     <div class="header-controls">
       <button class="btn btn-danger" onclick="clearDatabase()">⚠ Vider la base</button>
@@ -185,90 +177,128 @@
   </div>
 
   <!-- KPIs -->
-  <div class="kpi-grid" style="margin-bottom: 2px;">
-    <div class="kpi-card" style="--kpi-color: var(--wood-warm)">
-      <div class="kpi-label">// Température actuelle</div>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--kpi-color:var(--c-temp)">
+      <div class="kpi-label">// Température</div>
       <div class="kpi-val" id="kpi-temp">--<span class="kpi-unit"> °C</span></div>
-      <div class="kpi-trend" id="kpi-temp-trend">—</div>
+      <div class="kpi-trend" id="kpi-temp-t">—</div>
     </div>
-    <div class="kpi-card" style="--kpi-color: #7ab8d4">
+    <div class="kpi-card" style="--kpi-color:var(--c-wind)">
       <div class="kpi-label">// Vitesse du vent</div>
       <div class="kpi-val" id="kpi-wind">--<span class="kpi-unit"> km/h</span></div>
-      <div class="kpi-trend" id="kpi-wind-trend">—</div>
+      <div class="kpi-trend" id="kpi-wind-t">—</div>
     </div>
-    <div class="kpi-card" style="--kpi-color: #e88a50">
-      <div class="kpi-label">// Temp. moyenne session</div>
-      <div class="kpi-val" id="kpi-avg">--<span class="kpi-unit"> °C</span></div>
-      <div class="kpi-trend">Calculée sur tous les relevés</div>
+    <div class="kpi-card" style="--kpi-color:var(--c-hum)">
+      <div class="kpi-label">// Humidité</div>
+      <div class="kpi-val" id="kpi-hum">--<span class="kpi-unit"> %</span></div>
+      <div class="kpi-trend" id="kpi-hum-t">—</div>
     </div>
-    <div class="kpi-card" style="--kpi-color: var(--wood-mid)">
-      <div class="kpi-label">// Nombre de relevés</div>
-      <div class="kpi-val" id="kpi-count">--</div>
-      <div class="kpi-trend">Enregistrements en base</div>
+    <div class="kpi-card" style="--kpi-color:var(--c-press)">
+      <div class="kpi-label">// Pression</div>
+      <div class="kpi-val" id="kpi-press">--<span class="kpi-unit"> hPa</span></div>
+      <div class="kpi-trend" id="kpi-press-t">—</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--c-iaq)">
+      <div class="kpi-label">// Qualité de l'air</div>
+      <div class="kpi-val" id="kpi-iaq">--<span class="kpi-unit"> IAQ</span></div>
+      <div class="kpi-trend" id="kpi-iaq-t">—</div>
     </div>
   </div>
 
-  <!-- CHARTS -->
-  <div class="charts-row" style="margin-bottom: 2px;">
+  <!-- CHARTS LIGNE 1 : Température + Vent -->
+  <div class="charts-2col">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title"><div class="chart-dot" style="background:var(--c-temp)"></div>Température</div>
+        <div class="chart-period">
+          <button class="period-btn active" onclick="setPeriod('temp',1,this)">1H</button>
+          <button class="period-btn" onclick="setPeriod('temp',6,this)">6H</button>
+          <button class="period-btn" onclick="setPeriod('temp',24,this)">24H</button>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="tempChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title"><div class="chart-dot" style="background:var(--c-wind)"></div>Vitesse du vent</div>
+        <div class="chart-period">
+          <button class="period-btn active" onclick="setPeriod('wind',1,this)">1H</button>
+          <button class="period-btn" onclick="setPeriod('wind',6,this)">6H</button>
+          <button class="period-btn" onclick="setPeriod('wind',24,this)">24H</button>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="windChart"></canvas></div>
+    </div>
+  </div>
 
-    <!-- CARTE 1 — Température -->
+  <!-- CHARTS LIGNE 2 : Humidité + Pression + Qualité d'air -->
+  <div class="charts-3col">
     <div class="chart-card">
       <div class="chart-card-header">
-        <div class="chart-card-title">Température</div>
+        <div class="chart-card-title"><div class="chart-dot" style="background:var(--c-hum)"></div>Humidité</div>
         <div class="chart-period">
-          <button class="period-btn active">1h</button>
-          <button class="period-btn">6h</button>
-          <button class="period-btn">24h</button>
+          <button class="period-btn active" onclick="setPeriod('hum',1,this)">1H</button>
+          <button class="period-btn" onclick="setPeriod('hum',6,this)">6H</button>
+          <button class="period-btn" onclick="setPeriod('hum',24,this)">24H</button>
         </div>
       </div>
-      <div style="position:relative; height:160px;">
-        <canvas id="tempChart"></canvas>
-      </div>
+      <div class="chart-wrap"><canvas id="humChart"></canvas></div>
     </div>
-  
-    <!-- CARTE 2 — Vent -->
     <div class="chart-card">
       <div class="chart-card-header">
-        <div class="chart-card-title">Vitesse du vent</div>
+        <div class="chart-card-title"><div class="chart-dot" style="background:var(--c-press)"></div>Pression</div>
         <div class="chart-period">
-          <button class="period-btn active">1h</button>
-          <button class="period-btn">6h</button>
-          <button class="period-btn">24h</button>
+          <button class="period-btn active" onclick="setPeriod('press',1,this)">1H</button>
+          <button class="period-btn" onclick="setPeriod('press',6,this)">6H</button>
+          <button class="period-btn" onclick="setPeriod('press',24,this)">24H</button>
         </div>
       </div>
-      <div style="position:relative; height:160px;">
-        <canvas id="windChart"></canvas>
+      <div class="chart-wrap"><canvas id="pressChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title"><div class="chart-dot" style="background:var(--c-iaq)"></div>Qualité de l'air</div>
+      </div>
+      <!-- Jauge IAQ au lieu d'un graphique linéaire -->
+      <div class="iaq-wrap">
+        <div class="iaq-score" id="iaq-score" style="color:var(--c-iaq)">--</div>
+        <div class="iaq-label" id="iaq-label" style="color:var(--text-dim)">En attente</div>
+        <div class="iaq-bar-wrap">
+          <div class="iaq-bar"><div class="iaq-bar-fill" id="iaq-bar-fill" style="width:0%;background:var(--c-iaq)"></div></div>
+        </div>
       </div>
     </div>
-  
   </div>
 
   <!-- TABLE -->
   <div class="table-card">
     <div class="table-header">
-      <div class="table-title">Historique des mesures</div>
+      <div class="table-title">Historique complet</div>
       <div class="table-actions">
         <input type="text" class="search-input" placeholder="// Filtrer..." oninput="filterTable(this.value)"/>
       </div>
     </div>
     <div style="overflow-x:auto">
-      <table id="mesures-table">
+      <table>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Température</th>
+            <th>Temp.</th>
             <th>Vent</th>
+            <th>Humidité</th>
+            <th>Pression</th>
+            <th>IAQ</th>
             <th>État</th>
             <th>Date / Heure</th>
           </tr>
         </thead>
         <tbody id="table-body">
-          <tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--text-dim);font-family:var(--font-mono);font-size:.78rem;letter-spacing:.05em">// CHARGEMENT DES DONNÉES...</td></tr>
+          <tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--text-dim);font-family:var(--font-mono);font-size:.78rem">// CHARGEMENT...</td></tr>
         </tbody>
       </table>
     </div>
     <div class="table-footer">
-      <span class="table-count" id="table-count">-- entrées</span>
+      <span class="table-count" id="table-count">—</span>
       <div class="pagination" id="pagination"></div>
     </div>
   </div>
@@ -281,220 +311,265 @@
 </footer>
 
 <script>
-  // ── CONFIG ──────────────────────────────────────────────────────────
-  const FLASK_BASE = "http://127.0.0.1:5000";  // [PLACEHOLDER] Changer si Flask tourne ailleurs
-  const REFRESH_MS = 10000;
-  const PER_PAGE   = 20;
+// ═══════════════════════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════════════════════
+const FLASK_BASE = "http://127.0.0.1:5000";
+const REFRESH_MS = 10000;
+const PER_PAGE   = 20;
 
-  let allData  = [];
-  let filtered = [];
-  let page     = 1;
+let allData  = [];
+let filtered = [];
+let page     = 1;
 
-  // ── CHARGEMENT ───────────────────────────────────────────────────────
-  // [PLACEHOLDER FLASK] Ajouter dans server.py :
-  //
-  //   from flask import jsonify
-  //   from flask_cors import CORS
-  //   CORS(app)
-  //
-  //   @app.route('/api/mesures')
-  //   def api_mesures():
-  //       conn = sqlite3.connect(DB_NAME)
-  //       cursor = conn.cursor()
-  //       cursor.execute("SELECT id, temperature, vent, date_heure FROM mesure ORDER BY id DESC LIMIT 500")
-  //       rows = cursor.fetchall()
-  //       conn.close()
-  //       return jsonify([{"id":r[0],"temperature":r[1],"vent":r[2],"date_heure":r[3]} for r in rows])
-  //
-  // Installer : pip install flask-cors
+// Périodes actives par graphique (en heures)
+const periods = { temp: 1, wind: 1, hum: 1, press: 1 };
 
-  async function loadData() {
-    try {
-      const res  = await fetch(`${FLASK_BASE}/api/mesures`);
-      const data = await res.json();
-      allData  = data;
-      filtered = [...data];
-      updateKPIs();
-      renderTable();
-      updateCharts(data);
-    } catch(e) {
-      console.warn("Flask hors ligne — données de démo actives");
-      demoFallback();
+// ═══════════════════════════════════════════════════════════════════════
+//  CHARGEMENT DEPUIS FLASK
+// ═══════════════════════════════════════════════════════════════════════
+async function loadData() {
+  try {
+    const res  = await fetch(`${FLASK_BASE}/api/mesures`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    allData    = data;
+    filtered   = [...data];
+    updateKPIs();
+    updateCharts();
+    updateIAQ();
+    renderTable();
+    document.getElementById('last-update').textContent = new Date().toLocaleTimeString('fr-FR');
+  } catch(e) {
+    console.warn("Flask hors ligne — démo active :", e.message);
+    demoFallback();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  KPIs
+// ═══════════════════════════════════════════════════════════════════════
+function updateKPIs() {
+  if (!allData.length) return;
+  const l = allData[0]; // dernière mesure
+
+  set('kpi-temp',  `${l.temperature ?? '--'}<span class="kpi-unit"> °C</span>`);
+  set('kpi-wind',  `${l.vent        ?? '--'}<span class="kpi-unit"> km/h</span>`);
+  set('kpi-hum',   `${l.humidite    != null ? parseFloat(l.humidite).toFixed(1) : '--'}<span class="kpi-unit"> %</span>`);
+  set('kpi-press', `${l.pression    != null ? parseFloat(l.pression).toFixed(1) : '--'}<span class="kpi-unit"> hPa</span>`);
+  set('kpi-iaq',   `${l.qualite_air != null ? Math.round(l.qualite_air) : '--'}<span class="kpi-unit"> IAQ</span>`);
+
+  setTrend('kpi-temp-t',  allData, 'temperature', '°C');
+  setTrend('kpi-wind-t',  allData, 'vent',        'km/h');
+  setTrend('kpi-hum-t',   allData, 'humidite',    '%');
+  setTrend('kpi-press-t', allData, 'pression',    'hPa');
+  setTrend('kpi-iaq-t',   allData, 'qualite_air', '');
+}
+
+function set(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+function setTrend(id, data, field, unit) {
+  if (data.length < 2) return;
+  const delta = (parseFloat(data[0][field]) - parseFloat(data[1][field])).toFixed(1);
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (delta > 0) { el.textContent = `↑ +${delta}${unit}`; el.className = 'kpi-trend warn'; }
+  else if (delta < 0) { el.textContent = `↓ ${delta}${unit}`; el.className = 'kpi-trend down'; }
+  else { el.textContent = '→ Stable'; el.className = 'kpi-trend'; }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  GRAPHIQUES
+// ═══════════════════════════════════════════════════════════════════════
+const CHART_CFG = {
+  temp:  { canvasId: 'tempChart',  field: 'temperature', color: '#c4813a', unit: '°C' },
+  wind:  { canvasId: 'windChart',  field: 'vent',        color: '#7ab8d4', unit: 'km/h' },
+  hum:   { canvasId: 'humChart',   field: 'humidite',    color: '#5ec4a0', unit: '%' },
+  press: { canvasId: 'pressChart', field: 'pression',    color: '#a78bfa', unit: 'hPa' },
+};
+
+const charts = {};
+
+function makeChartOptions(unit, color) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 300 },
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#1e2124',
+      borderColor: '#32383e', borderWidth: 1,
+      titleFont: { family: 'IBM Plex Mono', size: 10 },
+      bodyFont:  { family: 'IBM Plex Mono', size: 11 },
+      callbacks: { label: ctx => ` ${ctx.parsed.y} ${unit}` }
+    }},
+    scales: {
+      x: { ticks: { color: '#7a7570', font: { family: 'IBM Plex Mono', size: 9 }, maxTicksLimit: 6 }, grid: { color: 'rgba(50,56,62,.5)' } },
+      y: { ticks: { color: '#7a7570', font: { family: 'IBM Plex Mono', size: 9 } }, grid: { color: 'rgba(50,56,62,.5)' }, title: { display: true, text: unit, color: '#7a7570', font: { family: 'IBM Plex Mono', size: 9 } } }
     }
-  }
-  // ── INIT GRAPHIQUES ──────────────────────────────────────────────────
-  let tempChart = null;
-  let windChart = null;
+  };
+}
 
-  function initCharts() {
-    const commonOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 400 },
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          ticks: { color: '#7a7570', font: { family: 'IBM Plex Mono', size: 10 }, maxTicksLimit: 6 },
-          grid:  { color: 'rgba(50,56,62,.5)' }
-        },
-        y: {
-          ticks: { color: '#7a7570', font: { family: 'IBM Plex Mono', size: 10 } },
-          grid:  { color: 'rgba(50,56,62,.5)' }
-        }
-      }
-    };
-
-    tempChart = new Chart(document.getElementById('tempChart'), {
+function initCharts() {
+  for (const [key, cfg] of Object.entries(CHART_CFG)) {
+    const ctx = document.getElementById(cfg.canvasId);
+    if (!ctx) continue;
+    charts[key] = new Chart(ctx, {
       type: 'line',
       data: {
         labels: [],
-        datasets: [{
-          data: [],
-          borderColor: '#c4813a',
-          backgroundColor: 'rgba(196,129,58,.08)',
-          borderWidth: 2,
-          pointRadius: 2,
-          fill: true,
-          tension: 0.3
-        }]
+        datasets: [{ data: [], borderColor: cfg.color, backgroundColor: cfg.color + '15', borderWidth: 2, pointRadius: 2, pointHoverRadius: 4, fill: true, tension: 0.35 }]
       },
-      options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, title: { display: true, text: '°C', color: '#7a7570' } } } }
-    });
-
-    windChart = new Chart(document.getElementById('windChart'), {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [{
-          data: [],
-          borderColor: '#7ab8d4',
-          backgroundColor: 'rgba(122,184,212,.08)',
-          borderWidth: 2,
-          pointRadius: 2,
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, title: { display: true, text: 'km/h', color: '#7a7570' } } } }
+      options: makeChartOptions(cfg.unit, cfg.color)
     });
   }
+}
 
-  function updateCharts(data) {
-    // On prend les 30 derniers relevés et on les remet dans l'ordre chronologique
-    const slice  = [...data].slice(0, 30).reverse();
+function filterByPeriod(data, hours) {
+  if (!hours) return [...data].reverse();
+  const cutoff = Date.now() - hours * 3600 * 1000;
+  return data.filter(d => {
+    if (!d.date_heure) return true;
+    return new Date(d.date_heure.replace(' ', 'T')).getTime() >= cutoff;
+  }).reverse();
+}
+
+function updateCharts() {
+  for (const [key, cfg] of Object.entries(CHART_CFG)) {
+    const chart = charts[key];
+    if (!chart) continue;
+    const slice  = filterByPeriod(allData, periods[key]);
     const labels = slice.map(d => d.date_heure ? d.date_heure.slice(11, 19) : '');
-    const temps  = slice.map(d => d.temperature);
-    const vents  = slice.map(d => d.vent);
-
-    tempChart.data.labels            = labels;
-    tempChart.data.datasets[0].data  = temps;
-    tempChart.update();
-
-    windChart.data.labels            = labels;
-    windChart.data.datasets[0].data  = vents;
-    windChart.update();
+    const values = slice.map(d => d[cfg.field] != null ? parseFloat(d[cfg.field]).toFixed(1) : null);
+    chart.data.labels           = labels;
+    chart.data.datasets[0].data = values;
+    chart.update();
   }
-  // ── KPIs ─────────────────────────────────────────────────────────────
-  function updateKPIs() {
-    if (!allData.length) return;
-    const latest = allData[0];
-    const temps  = allData.map(d => d.temperature);
-    const avg    = (temps.reduce((a,b) => a+b, 0) / temps.length).toFixed(1);
+}
 
-    document.getElementById('kpi-temp').innerHTML  = `${latest.temperature}<span class="kpi-unit"> °C</span>`;
-    document.getElementById('kpi-wind').innerHTML  = `${latest.vent}<span class="kpi-unit"> km/h</span>`;
-    document.getElementById('kpi-avg').innerHTML   = `${avg}<span class="kpi-unit"> °C</span>`;
-    document.getElementById('kpi-count').textContent = allData.length;
+function setPeriod(chartKey, hours, btn) {
+  periods[chartKey] = hours;
+  // Mettre à jour les boutons du bon groupe
+  btn.closest('.chart-period').querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateCharts();
+}
 
-    const delta   = allData.length > 1 ? latest.temperature - allData[1].temperature : 0;
-    const trendEl = document.getElementById('kpi-temp-trend');
-    if      (delta > 0) { trendEl.textContent = `↑ +${delta}°C depuis dernier relevé`; trendEl.className = 'kpi-trend warn'; }
-    else if (delta < 0) { trendEl.textContent = `↓ ${delta}°C depuis dernier relevé`;  trendEl.className = 'kpi-trend down'; }
-    else                { trendEl.textContent = `→ Stable`;                             trendEl.className = 'kpi-trend'; }
+// ═══════════════════════════════════════════════════════════════════════
+//  JAUGE QUALITÉ D'AIR
+// ═══════════════════════════════════════════════════════════════════════
+function updateIAQ() {
+  if (!allData.length || allData[0].qualite_air == null) return;
+  const iaq = Math.round(allData[0].qualite_air);
 
-    const wDelta   = allData.length > 1 ? latest.vent - allData[1].vent : 0;
-    const wTrendEl = document.getElementById('kpi-wind-trend');
-    wTrendEl.textContent  = wDelta > 0 ? `↑ +${wDelta} km/h` : wDelta < 0 ? `↓ ${wDelta} km/h` : '→ Stable';
-    wTrendEl.className    = 'kpi-trend' + (wDelta > 0 ? ' warn' : wDelta < 0 ? ' down' : '');
-  }
+  // Barème IAQ BlueDot BME680 (0 = excellent, 500 = dangereux)
+  let label, color, pct;
+  if      (iaq <= 50)  { label = 'Excellent';   color = '#5ec4a0'; pct = 10; }
+  else if (iaq <= 100) { label = 'Bon';          color = '#c4813a'; pct = 25; }
+  else if (iaq <= 150) { label = 'Modéré';       color = '#e8a855'; pct = 40; }
+  else if (iaq <= 200) { label = 'Mauvais';      color = '#f87171'; pct = 60; }
+  else if (iaq <= 300) { label = 'Très mauvais'; color = '#dc2626'; pct = 80; }
+  else                  { label = 'Dangereux';   color = '#7f1d1d'; pct = 100; }
 
-  // ── TABLE ─────────────────────────────────────────────────────────────
-  function renderTable() {
-    const tbody = document.getElementById('table-body');
-    const start = (page - 1) * PER_PAGE;
-    const slice = filtered.slice(start, start + PER_PAGE);
+  const scoreEl = document.getElementById('iaq-score');
+  const labelEl = document.getElementById('iaq-label');
+  const barEl   = document.getElementById('iaq-bar-fill');
+  if (scoreEl) { scoreEl.textContent = iaq; scoreEl.style.color = color; }
+  if (labelEl) { labelEl.textContent = label; labelEl.style.color = color; }
+  if (barEl)   { barEl.style.width = pct + '%'; barEl.style.background = color; }
+}
 
-    if (!slice.length) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--text-dim);font-family:var(--font-mono);font-size:.78rem">// AUCUNE DONNÉE</td></tr>`;
-      return;
-    }
+// ═══════════════════════════════════════════════════════════════════════
+//  TABLE
+// ═══════════════════════════════════════════════════════════════════════
+function renderTable() {
+  const tbody = document.getElementById('table-body');
+  const slice = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
 
-    tbody.innerHTML = slice.map(row => {
-      const tempClass  = row.temperature > 100 ? 'hot' : 'ok';
-      const windClass  = row.vent > 20 ? 'strong' : '';
-      const isError    = row.temperature > 150 && row.vent > 25;
-      const isWarn     = !isError && (row.temperature > 100 || row.vent > 20);
-      const badgeClass = isError ? 'badge-error' : isWarn ? 'badge-warn' : 'badge-ok';
-      const badgeText  = isError ? 'HORS LIMITES'  : isWarn ? 'ATTENTION'  : 'NORMAL';
-      const date       = row.date_heure ? new Date(row.date_heure).toLocaleString('fr-FR') : '—';
-      return `<tr>
-        <td class="td-id">#${String(row.id).padStart(4,'0')}</td>
-        <td class="td-temp ${tempClass}">${row.temperature} °C</td>
-        <td class="td-wind ${windClass}">${row.vent} km/h</td>
-        <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-        <td class="td-date">${date}</td>
-      </tr>`;
-    }).join('');
-
-    document.getElementById('table-count').textContent = `// ${filtered.length} entrée${filtered.length > 1 ? 's' : ''}`;
-    renderPagination();
+  if (!slice.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-dim);font-family:var(--font-mono);font-size:.78rem">// AUCUNE DONNÉE</td></tr>`;
+    return;
   }
 
-  function renderPagination() {
-    const pages = Math.ceil(filtered.length / PER_PAGE);
-    document.getElementById('pagination').innerHTML = Array.from({length: Math.min(pages, 5)}, (_,i) =>
-      `<button class="page-btn ${i+1===page?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`
-    ).join('');
-  }
+  tbody.innerHTML = slice.map(r => {
+    const isError = r.temperature > 150 && r.vent > 25;
+    const isWarn  = !isError && (r.temperature > 100 || r.vent > 20);
+    const badge   = isError ? 'badge-error' : isWarn ? 'badge-warn' : 'badge-ok';
+    const label   = isError ? 'HORS LIMITES' : isWarn ? 'ATTENTION' : 'NORMAL';
+    const date    = r.date_heure ? new Date(r.date_heure.replace(' ','T')).toLocaleString('fr-FR') : '—';
+    const iaq     = r.qualite_air != null ? Math.round(r.qualite_air) : '—';
+    return `<tr>
+      <td class="td-id">#${String(r.id).padStart(4,'0')}</td>
+      <td class="td-num" style="color:var(--c-temp)">${r.temperature ?? '—'} °C</td>
+      <td class="td-num" style="color:var(--c-wind)">${r.vent ?? '—'} km/h</td>
+      <td class="td-num" style="color:var(--c-hum)">${r.humidite != null ? parseFloat(r.humidite).toFixed(1) : '—'} %</td>
+      <td class="td-num" style="color:var(--c-press)">${r.pression != null ? parseFloat(r.pression).toFixed(1) : '—'} hPa</td>
+      <td class="td-num" style="color:var(--c-iaq)">${iaq}</td>
+      <td><span class="badge ${badge}">${label}</span></td>
+      <td class="td-date">${date}</td>
+    </tr>`;
+  }).join('');
 
-  function goPage(n) { page = n; renderTable(); }
+  document.getElementById('table-count').textContent = `// ${filtered.length} entrée${filtered.length > 1 ? 's' : ''}`;
+  renderPagination();
+}
 
-  function filterTable(q) {
-    q = q.toLowerCase().replace('//', '').trim();
-    filtered = allData.filter(d =>
-      String(d.temperature).includes(q) || String(d.vent).includes(q) ||
-      (d.date_heure && d.date_heure.toLowerCase().includes(q))
-    );
-    page = 1; renderTable();
-  }
+function renderPagination() {
+  const pages = Math.ceil(filtered.length / PER_PAGE);
+  document.getElementById('pagination').innerHTML = Array.from({length: Math.min(pages,5)}, (_,i) =>
+    `<button class="page-btn ${i+1===page?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`
+  ).join('');
+}
 
-  // ── CLEAR DB ─────────────────────────────────────────────────────────
-  async function clearDatabase() {
-    if (!confirm("Vider toute la base de données ?\nCette action est irréversible.")) return;
-    try {
-      const res = await fetch(`${FLASK_BASE}/clear_db`, { method: 'POST' });
-      if (res.ok) { allData = []; filtered = []; page = 1; updateKPIs(); renderTable(); }
-    } catch(e) { alert("Impossible de joindre le serveur Flask."); }
-  }
+function goPage(n) { page = n; renderTable(); }
 
-  // ── DEMO ─────────────────────────────────────────────────────────────
-  function demoFallback() {
-    const now = Date.now();
-    allData = Array.from({length: 40}, (_,i) => ({
-      id: 40 - i,
-      temperature: Math.round(18 + Math.random() * 25),
-      vent: Math.round(3 + Math.random() * 22),
-      date_heure: new Date(now - i * 10000).toISOString().replace('T',' ').slice(0,19)
-    }));
-    filtered = [...allData];
-    updateKPIs(); renderTable();
-    updateCharts(allData);
-  }
+function filterTable(q) {
+  q = q.toLowerCase().replace(/\/\//g,'').trim();
+  filtered = allData.filter(d =>
+    ['temperature','vent','humidite','pression','qualite_air','date_heure']
+      .some(k => String(d[k] ?? '').toLowerCase().includes(q))
+  );
+  page = 1; renderTable();
+}
 
-  // ── INIT ─────────────────────────────────────────────────────────────
-  initCharts();
-  loadData();
-  setInterval(loadData, REFRESH_MS);
+// ═══════════════════════════════════════════════════════════════════════
+//  CLEAR DB
+// ═══════════════════════════════════════════════════════════════════════
+async function clearDatabase() {
+  if (!confirm("Vider toute la base de données ?\nIrréversible.")) return;
+  try {
+    const res = await fetch(`${FLASK_BASE}/clear_db`, { method: 'POST' });
+    if (res.ok) { allData = []; filtered = []; page = 1; renderTable(); }
+  } catch(e) { alert("Impossible de joindre Flask."); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  DONNÉES DE DÉMO (Flask hors ligne)
+// ═══════════════════════════════════════════════════════════════════════
+function demoFallback() {
+  const now = Date.now();
+  allData = Array.from({length: 60}, (_,i) => ({
+    id:          60 - i,
+    temperature: +(18 + Math.random()*20).toFixed(1),
+    vent:        Math.round(3 + Math.random()*22),
+    humidite:    +(40 + Math.random()*40).toFixed(1),
+    pression:    +(1008 + Math.random()*15).toFixed(1),
+    qualite_air: +(30 + Math.random()*170).toFixed(0),
+    date_heure:  new Date(now - i*10000).toISOString().replace('T',' ').slice(0,19)
+  }));
+  filtered = [...allData];
+  updateKPIs(); updateCharts(); updateIAQ(); renderTable();
+  document.getElementById('last-update').textContent = new Date().toLocaleTimeString('fr-FR') + ' (démo)';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════════════
+initCharts();
+loadData();
+setInterval(loadData, REFRESH_MS);
 </script>
 
 </body>
