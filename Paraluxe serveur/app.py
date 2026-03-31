@@ -19,6 +19,7 @@ def init_db():
             humidite     REAL,
             pression     REAL,
             qualite_air  REAL,
+            luminosite   REAL,
             date_heure   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -35,6 +36,7 @@ def receive_data():
         humidite = request.form.get('humidite',    0)
         pression = request.form.get('pression',    0)
         qualite  = request.form.get('qualite_air', 0)
+        luminosite = request.form.get('luminosite', 0)
  
         if temp is None or vent is None:
             return "Erreur : température et vent requis", 400
@@ -45,6 +47,7 @@ def receive_data():
             humidite = float(humidite)
             pression = float(pression)
             qualite  = float(qualite)
+            luminosite = float(luminosite)
         except ValueError:
             return "Erreur : valeurs invalides", 400
  
@@ -54,8 +57,8 @@ def receive_data():
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO mesure (temperature, vent, humidite, pression, qualite_air) VALUES (?,?,?,?,?)",
-            (temp, vent, humidite, pression, qualite)
+            "INSERT INTO mesure (temperature, vent, humidite, pression, qualite_air, luminosite) VALUES (?,?,?,?,?,?)",
+            (temp, vent, humidite, pression, qualite, luminosite)
         )
         conn.commit()
         conn.close()

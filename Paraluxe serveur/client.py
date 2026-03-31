@@ -37,6 +37,10 @@ def parse_ligne(line):
         # Résistance gaz en Ohms → on convertit en kΩ pour l'affichage
         val = line.split(":")[1].replace("Ω", "").strip()
         return ("qualite_air", round(float(val) / 1000, 2))  # kΩ
+
+    elif line.startswith("Luminosite"):
+        val = line.split(":")[1].replace("%", "").strip()
+        return ("luminosite", float(val))
  
     return None
  
@@ -92,7 +96,7 @@ def main():
                 print(f"   ↳ {key} = {val}")
  
             # Quand on a les 4 valeurs du capteur → on envoie
-            if all(k in mesure_en_cours for k in ("temperature", "humidite", "pression", "qualite_air")):
+            if all(k in mesure_en_cours for k in ("temperature", "humidite", "pression", "qualite_air", "luminosite")):
                 envoyer(mesure_en_cours.copy())
                 mesure_en_cours = {}  # reset pour la prochaine mesure
                 print()
