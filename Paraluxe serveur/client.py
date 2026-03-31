@@ -2,7 +2,7 @@ import serial
 import requests
 import time
  
-PORT      = "COM3"              # Windows → COM3, COM4... | Linux/Mac → "/dev/ttyACM0"
+PORT      = "COM40"              # Windows → COM3, COM4... | Linux/Mac → "/dev/ttyACM0"
 BAUD      = 9600
 FLASK_URL = "http://127.0.0.1:5000/receive_data"
  
