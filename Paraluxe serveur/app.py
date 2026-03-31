@@ -1,93 +1,122 @@
 import sqlite3
-from flask import Flask, request, render_template
-
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+ 
 app = Flask(__name__)
+CORS(app)  # Permet au site web de lire les données sans erreur CORS
+ 
 DB_NAME = "mesures.db"
-
-# Création de la table si elle n'existe pas encore
+ 
+ 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS mesure (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            temperature INTEGER,
-            vent INTEGER,
-            date_heure TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            temperature  REAL,
+            vent         INTEGER,
+            humidite     REAL,
+            pression     REAL,
+            qualite_air  REAL,
+            date_heure   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
     conn.commit()
     conn.close()
-
-### Pages HTML
-
-@app.route('/')
-def home():
-    return render_template("index.html")
-@app.route('/mesures')
-def mesures():
-    return render_template("mesures.html")
-
-### API
-
+ 
+ 
+# ── RÉCEPTION DES DONNÉES (client.py → Flask) ──────────────────────────
 @app.route('/receive_data', methods=["POST", "GET"])
 def receive_data():
     if request.method == 'POST':
-        temp = request.form.get('temperature')
-        vent = request.form.get('vent')
-
-        # Vérification que les valeurs existent
+        temp     = request.form.get('temperature')
+        vent     = request.form.get('vent')
+        humidite = request.form.get('humidite',    0)
+        pression = request.form.get('pression',    0)
+        qualite  = request.form.get('qualite_air', 0)
+ 
         if temp is None or vent is None:
-            return "Erreur : paramètres 'temperature' et 'vent' requis", 400
-
+            return "Erreur : température et vent requis", 400
+ 
         try:
-            temp = int(temp)*100
-            vent = int(vent)*100
+            temp     = float(temp)
+            vent     = int(float(vent))
+            humidite = float(humidite)
+            pression = float(pression)
+            qualite  = float(qualite)
         except ValueError:
-            return "Erreur : les valeurs doivent être des nombres entiers", 400
-
-        # Vérification des seuils
+            return "Erreur : valeurs invalides", 400
+ 
         if temp > 150 and vent > 25:
             return "Erreur 432 : valeurs hors limites", 432
-
-        # Insertion en base
+ 
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO mesure (temperature, vent) VALUES (?, ?)", (temp, vent)
+            "INSERT INTO mesure (temperature, vent, humidite, pression, qualite_air) VALUES (?,?,?,?,?)",
+            (temp, vent, humidite, pression, qualite)
         )
         conn.commit()
         conn.close()
-
-        return f'Données reçues et enregistrées : {temp}°C, {vent}km/h', 200
-
-    else:
-        # Affiche les 10 dernières mesures dans le navigateur
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM mesure ORDER BY id DESC LIMIT 10")
-        rows = cursor.fetchall()
-        conn.close()
-
-        if not rows:
-            return "Aucune mesure enregistrée pour le moment."
-
-        result = "<h2>10 dernières mesures</h2><ul>"
-        for row in rows:
-            result += f"<li>ID {row[0]} — {row[1]}°C, {row[2]} km/h — {row[3]}</li>"
-        result += "</ul>"
-        return result
-
-@app.route('/clear_db', methods=['POST'])
+ 
+        return f'Données reçues : {temp}°C | {vent}km/h | {humidite}% | {pression}hPa | IAQ:{qualite}', 200
+ 
+    # GET → affiche les 10 dernières mesures pour vérif rapide dans le navigateur
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM mesure ORDER BY id DESC LIMIT 10")
+    rows = cursor.fetchall()
+    conn.close()
+    if not rows:
+        return "Aucune mesure enregistrée."
+    result = "<h2>10 dernières mesures</h2><ul>"
+    for r in rows:
+        result += f"<li>#{r[0]} — {r[1]}°C | {r[2]}km/h | {r[3]}% | {r[4]}hPa | IAQ:{r[5]} — {r[6]}</li>"
+    result += "</ul>"
+    return result
+ 
+ 
+# ── API POUR LE SITE WEB (mesures.html → Flask) ─────────────────────────
+@app.route('/api/mesures')
+def api_mesures():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, temperature, vent, humidite, pression, qualite_air, date_heure
+        FROM mesure
+        ORDER BY id DESC
+        LIMIT 500
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return jsonify([
+        {
+            "id":          r[0],
+            "temperature": r[1],
+            "vent":        r[2],
+            "humidite":    r[3],
+            "pression":    r[4],
+            "qualite_air": r[5],
+            "date_heure":  r[6]
+        }
+        for r in rows
+    ])
+ 
+ 
+# ── VIDER LA BASE ────────────────────────────────────────────────────────
+@app.route('/clear_db', methods=["POST"])
 def clear_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM mesures")
+    cursor.execute("DELETE FROM mesure")
     cursor.execute("DELETE FROM sqlite_sequence WHERE name='mesure'")
     conn.commit()
     conn.close()
-    return "base de données vidée !", 200
-
+    return "Base de données vidée", 200
+ 
+ 
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
+ 
