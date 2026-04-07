@@ -71,7 +71,7 @@ def main():
         print("✅ Arduino connecté — lecture en cours...\n")
     except serial.SerialException as e:
         print(f"❌ Impossible d'ouvrir {PORT} : {e}")
-        print("   → Vérifie le port dans le Gestionnaire de périphériques")
+        print("   → Vérifier le port dans le Gestionnaire de périphériques")
         return
  
     # On accumule les 4 valeurs du BME680 avant d'envoyer
