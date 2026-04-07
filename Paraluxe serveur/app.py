@@ -123,3 +123,6 @@ if __name__ == '__main__':
     init_db()
     app.run(debug=True)
  
+# Function for gunicorn deployment
+def create_app(test_config=None):
+    return app
