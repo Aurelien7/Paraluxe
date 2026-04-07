@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
  
 app = Flask(__name__)
@@ -26,6 +26,14 @@ def init_db():
     conn.commit()
     conn.close()
  
+### Pages HTML
+
+@app.route('/')
+def home():
+    return render_template("index.html")
+@app.route('/mesures')
+def mesures():
+    return render_template("mesures.html")
  
 # ── RÉCEPTION DES DONNÉES (client.py → Flask) ──────────────────────────
 @app.route('/receive_data', methods=["POST", "GET"])
