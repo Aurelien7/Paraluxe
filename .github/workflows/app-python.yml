@@ -29,6 +29,7 @@ jobs:
           mkdir -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           sudo chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SERVER_IP }}"
           ssh-keyscan "${{ secrets.SERVER_IP }}" > ~/.ssh/known_hosts
           git remote add vps ssh://${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}${{ secrets.GIT_REPO_PATH }}
           git fetch vps main
