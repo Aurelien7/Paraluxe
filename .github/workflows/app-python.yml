@@ -23,16 +23,20 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - name: Deploy
+        env: 
+          SSH_USER: ${{ secrets.SSH_USER }}          
+          SERVER_IP: ${{ secrets.SERVER_IP }}          
+          GIT_REPO_PATH: ${{ secrets.GIT_REPO_PATH }}          
         run: |
           env
           echo "Deploy paraluxe"
-          echo "ssh remote ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}${{ secrets.GIT_REPO_PATH }}"
+          echo "ssh remote ${{ SSH_USER }}@${{ SERVER_IP }}${{ secrets.GIT_REPO_PATH }}"
           mkdir -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           sudo chmod 600 ~/.ssh/id_rsa
-          echo "Server IP ${{ secrets.SERVER_IP }}"
-          ssh-keyscan "${{ secrets.SERVER_IP }}" > ~/.ssh/known_hosts
-          git remote add vps ssh://${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}${{ secrets.GIT_REPO_PATH }}
+          echo "Server IP ${{ SERVER_IP }}"
+          ssh-keyscan "${{ SERVER_IP }}" > ~/.ssh/known_hosts
+          git remote add vps ssh://${{ SSH_USER }}@${{ SERVER_IP }}${{ GIT_REPO_PATH }}
           git fetch vps main
           git log --graph --all
           git push --force-with-lease vps main
